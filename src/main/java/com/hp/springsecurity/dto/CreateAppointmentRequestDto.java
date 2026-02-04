@@ -1,0 +1,13 @@
+package com.hp.springsecurity.dto;
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class CreateAppointmentRequestDto {
+    private Long doctorId;
+    private Long patientId;
+    private LocalDateTime appLocalDateTime;
+    private String reason;
+}

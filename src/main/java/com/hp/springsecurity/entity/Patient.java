@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Entity
 @Data
 @Table(
         name = "patient",
@@ -31,7 +32,7 @@ public class Patient {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private LocalDate localDate;
+    private LocalDate birthDate;
 
 
     private String gender;
@@ -41,6 +42,6 @@ public class Patient {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    private BloodGroupType bloodgroup;
+    private BloodGroupType bloodGroup;
 
 }

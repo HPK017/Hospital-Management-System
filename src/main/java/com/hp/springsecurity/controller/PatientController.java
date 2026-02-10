@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/patients")
 @RequiredArgsConstructor
@@ -27,5 +29,13 @@ public class PatientController {
     public ResponseEntity<PatientResponseDto> getPatientProfile() {
         Long patientId = 4L;
         return ResponseEntity.ok(patientService.getPatientById(patientId));
+    }
+
+    @GetMapping("/getAllPatients")
+    public ResponseEntity<List<PatientResponseDto>> getALlPatients(
+            @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "size", defaultValue = "10") Integer pageSize
+    ) {
+        return ResponseEntity.ok(patientService.getAllPatients(pageNumber, pageSize));
     }
 }

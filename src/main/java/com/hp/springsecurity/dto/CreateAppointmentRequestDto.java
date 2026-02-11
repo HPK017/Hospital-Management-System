@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class CreateAppointmentRequestDto {
     private Long doctorId;
     private Long patientId;
-    private LocalDateTime appLocalDateTime;
+    private LocalDateTime appointmentTime;
     private String reason;
 }

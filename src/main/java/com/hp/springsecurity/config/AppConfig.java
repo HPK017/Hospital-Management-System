@@ -29,20 +29,20 @@ public class AppConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-    @Bean
-    UserDetailsService userDetailsService() {
-        UserDetails user1 = User.withUsername("admin")
-                .password(passwordEncoder().encode("pass"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user2 = User.withUsername("patient")
-                .password(passwordEncoder().encode("pass"))
-                .roles("PATIENT")
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
+//
+//    @Bean
+//    UserDetailsService userDetailsService() {
+//        UserDetails user1 = User.withUsername("admin")
+//                .password(passwordEncoder().encode("pass"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails user2 = User.withUsername("patient")
+//                .password(passwordEncoder().encode("pass"))
+//                .roles("PATIENT")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user1, user2);
+    //  }
 
 }

@@ -1,8 +1,10 @@
 package com.hp.springsecurity.service;
 
+import com.hp.springsecurity.dto.JwtResponse;
 import com.hp.springsecurity.dto.LoginRequestDto;
 import com.hp.springsecurity.dto.LoginResponseDto;
 import com.hp.springsecurity.dto.SignUpResponseDto;
+import com.hp.springsecurity.entity.RefreshToken;
 import com.hp.springsecurity.entity.User;
 import com.hp.springsecurity.repository.UserRepository;
 import com.hp.springsecurity.security.AuthUtil;
@@ -22,8 +24,9 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public JwtResponse login(LoginRequestDto loginRequestDto) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
@@ -31,9 +34,15 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
 
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequestDto.getUsername());
+
         String token = authUtil.generateAccessToken(user);
 
-        return new LoginResponseDto(token, user.getId());
+        return JwtResponse.builder()
+                .accessToken(token)
+                .token(refreshToken.getToken()).build();
+
+       // return new LoginResponseDto(token, user.getId());
     }
 
     public SignUpResponseDto signup(LoginRequestDto signupRequestDto) {

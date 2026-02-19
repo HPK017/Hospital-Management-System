@@ -1,5 +1,6 @@
 package com.hp.springsecurity.controller;
 
+import com.hp.springsecurity.dto.JwtResponse;
 import com.hp.springsecurity.dto.LoginRequestDto;
 import com.hp.springsecurity.dto.LoginResponseDto;
 import com.hp.springsecurity.dto.SignUpResponseDto;
@@ -19,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 

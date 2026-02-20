@@ -36,7 +36,7 @@ public class AuthService {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequestDto.getUsername());
 
-        String token = authUtil.generateAccessToken(user);
+        String token = authUtil.generateToken(loginRequestDto.getUsername());
 
         return JwtResponse.builder()
                 .accessToken(token)

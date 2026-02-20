@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class AuthUtil {
@@ -26,7 +28,7 @@ public class AuthUtil {
                 .subject(user.getUsername())
                 .claim("userId", user.getId().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*10))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
                 .signWith(getSecretKey())
                 .compact();
     }
@@ -40,7 +42,17 @@ public class AuthUtil {
         return claims.getSubject();
     }
 
+    public String generateToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username);
+    }
 
-
-
+    private String createToken(Map<String, Object> claims, String userName) {
+        return Jwts.builder()
+                .claims(claims)
+                .subject(userName)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
+                .signWith(getSecretKey(), Jwts.SIG.HS256).compact();
+    }
 }

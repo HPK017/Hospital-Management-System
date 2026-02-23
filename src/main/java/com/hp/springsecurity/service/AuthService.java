@@ -25,8 +25,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
+    private final UserService userService;
 
-    public JwtResponse login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
@@ -34,15 +35,14 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequestDto.getUsername());
+        String refreshToken = authUtil.createRefreshToken(user);
+        String accessToken = authUtil.generateAccessToken(user);
 
-        String token = authUtil.generateToken(loginRequestDto.getUsername());
+//        return JwtResponse.builder()
+//                .accessToken(token)
+//                .token(refreshToken.getToken()).build();
 
-        return JwtResponse.builder()
-                .accessToken(token)
-                .token(refreshToken.getToken()).build();
-
-       // return new LoginResponseDto(token, user.getId());
+       return new LoginResponseDto(user.getId(), accessToken, refreshToken);
     }
 
     public SignUpResponseDto signup(LoginRequestDto signupRequestDto) {
@@ -58,4 +58,13 @@ public class AuthService {
 
         return new SignUpResponseDto(user.getId(), user.getUsername());
     }
+
+    public LoginResponseDto refreshToken(String refreshToken) {
+        Long userId = authUtil.generateUserIdFromToken(refreshToken);
+        User user = userService.getUserById(userId);
+
+        String accessToken = authUtil.generateAccessToken(user);
+        return new LoginResponseDto(user.getId(), accessToken, refreshToken);
+    }
+
 }

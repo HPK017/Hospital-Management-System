@@ -42,17 +42,36 @@ public class AuthUtil {
         return claims.getSubject();
     }
 
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+    public String createRefreshToken(User user) {
+        return Jwts.builder()
+                .subject(user.getId().toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30 * 6)) // 6 months
+                .signWith(getSecretKey())
+                .compact();
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
-        return Jwts.builder()
-                .claims(claims)
-                .subject(userName)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
-                .signWith(getSecretKey(), Jwts.SIG.HS256).compact();
+    public Long generateUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return Long.valueOf(claims.get("UserId", String.class));
     }
+
+//    public String generateToken(String username) {
+//        Map<String, Object> claims = new HashMap<>();
+//        return createToken(claims, username);
+//    }
+//
+//    private String createToken(Map<String, Object> claims, String userName) {
+//        return Jwts.builder()
+//                .claims(claims)
+//                .subject(userName)
+//                .issuedAt(new Date(System.currentTimeMillis()))
+//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
+//                .signWith(getSecretKey(), Jwts.SIG.HS256).compact();
+//    }
 }

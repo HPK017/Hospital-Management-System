@@ -1,5 +1,6 @@
 package com.hp.springsecurity.entity;
 
+import com.hp.springsecurity.type.AuthProviderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,5 +39,8 @@ public class User implements UserDetails {
     private String password;
 
     private String providerId;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProviderType providerType;
 
 }

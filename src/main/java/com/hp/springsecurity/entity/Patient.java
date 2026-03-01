@@ -2,7 +2,10 @@ package com.hp.springsecurity.entity;
 
 import com.hp.springsecurity.type.BloodGroupType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -22,6 +25,9 @@ import java.util.List;
                 @Index(name = "idx_patient_birth_date", columnList = "birthDate")
         }
 )
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Patient {
 
     @Id
@@ -37,6 +43,10 @@ public class Patient {
     private LocalDate birthDate;
 
     private String gender;
+
+    @OneToOne
+    @MapsId
+    private User user;
 
 //    @OneToOne
 //    @MapsId

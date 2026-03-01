@@ -3,11 +3,13 @@ package com.hp.springsecurity.controller;
 import com.hp.springsecurity.dto.AppointmentResponseDto;
 import com.hp.springsecurity.dto.CreateAppointmentRequestDto;
 import com.hp.springsecurity.dto.PatientResponseDto;
+import com.hp.springsecurity.entity.User;
 import com.hp.springsecurity.service.AppointmentService;
 import com.hp.springsecurity.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,9 @@ public class PatientController {
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "size", defaultValue = "10") Integer pageSize
     ) {
+
+        User user  = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return ResponseEntity.ok(patientService.getAllPatients(pageNumber, pageSize));
     }
 }

@@ -1,5 +1,6 @@
 package com.hp.springsecurity.entity;
 
+import com.hp.springsecurity.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class Doctor {
 
     @Column(unique = true, length = 100)
     private String email;
+
+    @OneToOne
+    @MapsId
+    private User user;
 
     @ManyToMany(mappedBy = "doctors")
     private Set<Department> departments = new HashSet<>();

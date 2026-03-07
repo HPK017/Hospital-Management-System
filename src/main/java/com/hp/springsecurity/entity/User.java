@@ -1,16 +1,22 @@
 package com.hp.springsecurity.entity;
 
+import com.hp.springsecurity.security.RolePermissionMapping;
 import com.hp.springsecurity.type.AuthProviderType;
+import com.hp.springsecurity.type.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -23,23 +29,38 @@ import java.util.List;
 )
 public class User implements UserDetails {
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JoinColumn(unique = true, nullable = false)
     private String username;
-
     private String password;
 
     private String providerId;
 
     @Enumerated(EnumType.STRING)
     private AuthProviderType providerType;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    Set<RoleType> roles = new HashSet<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return roles.stream()
+//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+//                .collect(Collectors.toSet());
+
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        roles.forEach(
+                role -> {
+                    Set<SimpleGrantedAuthority> permissions = RolePermissionMapping.getAuthoritiesForRole(role);
+                    authorities.addAll(permissions);
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+                }
+        );
+        return authorities;
+    }
 
 }
